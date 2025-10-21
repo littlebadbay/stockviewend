@@ -2,11 +2,16 @@ import http from 'http';
 import app from '@/app';
 import { initWebSocket } from '@/ws';
 import { logger } from '@/logger';
-import { PORT } from '@/config';
+import { PORT, WS_ENABLED } from '@/config';
 import { getRedisClient } from '@/redis/client';
 
 const server = http.createServer(app);
-initWebSocket(server);
+
+if (WS_ENABLED) {
+  initWebSocket(server);
+} else {
+  logger.info('WebSocket support disabled via WS_ENABLED env var');
+}
 
 getRedisClient();
 
