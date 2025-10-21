@@ -5,13 +5,18 @@ WORKDIR /app
 
 # Install dependencies first
 COPY package.json yarn.lock* ./
-RUN yarn install
+RUN yarn install --frozen-lockfile || yarn install
 
 # Copy the rest of the code
 COPY . .
 
-# Expose port
+# Build the TypeScript project
+RUN yarn build
+
+ENV NODE_ENV=production
+
+# Expose port (Render will provide PORT env var at runtime)
 EXPOSE 3000
 
-# Default to development command (override in compose if needed)
-CMD ["yarn", "dev"]
+# Start the compiled server
+CMD ["yarn", "start"]

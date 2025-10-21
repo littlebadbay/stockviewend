@@ -4,11 +4,17 @@ import helmet from 'helmet';
 import routes from '@/routes';
 import { errorHandler, notFound } from '@/middleware/error';
 import { httpLogger } from '@/logger';
+import { ALLOWED_ORIGINS } from '@/config';
 
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: ALLOWED_ORIGINS.includes('*') ? true : ALLOWED_ORIGINS,
+    credentials: true
+  })
+);
 app.use(express.json());
 app.use(httpLogger);
 
